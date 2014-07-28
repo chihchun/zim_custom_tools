@@ -1,0 +1,39 @@
+#!/usr/bin/python
+import dbus
+import sys
+import os.path
+import datetime
+import calendar 
+projects = {
+        'tangxi':  lambda: "meizu",
+        'canonical': lambda: 'Canonical',
+        'chinamobile': lambda: 'ChinaMobile',
+	    } 
+
+def mapping(path):
+    pathes = (os.path.dirname(path).split('/'))
+    pathes.append(os.path.basename(path).strip(".txt"))
+
+    for name in reversed(pathes):
+        try:
+            return (projects[name.lower()]())
+        except KeyError:
+            pass
+
+    return "organize@Daily"
+
+def main(argv=sys.argv):
+    if(not argv[2:]):
+        print("%s: page text" % argv[0])
+        return
+
+    activity = mapping(argv[1])
+    description = argv[2]
+    hamster = dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
+    hamster.AddFact('%s,%s' % (activity, description), 
+            calendar.timegm(datetime.datetime.now().timetuple()), 0, False)
+
+if __name__ == "__main__":
+    # %s real page source
+    # %t selected text
+    main()
