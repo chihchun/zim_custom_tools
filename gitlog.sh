@@ -6,11 +6,12 @@
 # 
 # Usage: terminator -x gitlog.sh %n %s
 
-set -e
+# set -e
 
 cd $1
 
 git log \
+    -p \
     --pretty=format:'%Cred%h%Creset %ci %Cgreen(%cr)%Creset' --abbrev-commit \
     --stat --summary  \
     --full-history \
@@ -18,3 +19,5 @@ git log \
     --no-decorate \
     --follow \
     -- $2
+
+read
