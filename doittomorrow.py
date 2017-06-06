@@ -34,8 +34,13 @@ def main(orig_file, notebook_path):
 
     title = parsetree.find("h")[0];
     if(title is not None):
-        newtree.set_heading(title, 1)
-        newtree._etree.getroot().append(ElementTreeModule.Element('p'))
+        # newtree.set_heading(title, 1)
+        h = ElementTreeModule.Element('h', {'level': 1})
+        h.text = title
+        newtree._etree.getroot().append(h)
+        p = ElementTreeModule.Element('p')
+        p.text = "\n"
+        newtree._etree.getroot().append(p)
 
     for para in parsetree._etree.getiterator('p'):
         p = ElementTreeModule.Element('p')
@@ -62,7 +67,7 @@ def main(orig_file, notebook_path):
 
 def flatten_list(node, parent = None, copied = False):
     for child in node.getchildren():
-        if child.tag in ('li') and child.get('bullet') not in (CHECKED_BOX, XCHECKED_BOX):
+        if child.tag in ('li') and (child.get('bullet') not in (CHECKED_BOX, XCHECKED_BOX)):
             if copied is False:
                yield copy.deepcopy(parent)
                copied = True
